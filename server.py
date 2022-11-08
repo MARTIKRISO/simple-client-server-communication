@@ -1,6 +1,7 @@
 #==========================SERVER=========================
 
-import socket, sys
+import socket, subprocess
+from sys import exit
 from time import sleep
 IP = "127.0.0.1"
 PORT = 12345
@@ -28,16 +29,34 @@ def manageTransmission(conn: socket.socket):
         print(f"Received: {incomingTransmission}")
             
         if incomingTransmission == "end":
-            conn.sendall("Exiting".encode())
+            conn.sendall("end".encode())
             print("Exiting")
             conn.close()
-            sys.exit()
+            exit()
         elif incomingTransmission == "hello":
-            conn.sendall("Hello World!".encode())
+            conn.sendall("hello".encode())
             print("Sent Hello World")
-        
-        
+        elif incomingTransmission == "command":
+            conn.sendall("command".encode())
+            print("Initializing Command Communication")
+            manageCommandTransmission(conn)
         sleep(1)
+
+def manageCommandTransmission(conn):
+    while 1:
+        command = conn.recv(BUFFERSIZE).decode()
+        if command == "end":
+            print("Ending Command Communication")
+            break
+        else:
+            resp = executeCommand()
+            conn.sendall(resp.encode())
+
+
+def executeCommand():
+    #TODO: this
+
+    return "commex"
 
 handleConnection()
     #inp = input("Continue: (Y/n) ")

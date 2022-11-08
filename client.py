@@ -19,7 +19,32 @@ def manageTransmission():
         sock.send(inp.encode())
         received = sock.recv(BUFFERSIZE).decode()
         print(received)
-        if inp == "end": sys.exit()
+        if received == "end": 
+            print("Ending communication")
+            sys.exit()
+        elif received == "hello":
+            print("Hello World!")
+        elif received == "command":
+            print("Initializing Command Communication")
+            manageCommandTransmission()
+    
+def manageCommandTransmission():
+    while 1:
+        command = input("Enter command: ('exit' to end)")
+        if command == "exit":
+            sock.sendall("end".encode()) 
+            print("Ending Command Communication")
+            return  
+        else:
+            message = command.encode()
+            sock.sendall(message)
+        resp = sock.recv(BUFFERSIZE).decode()
+        print(resp)
+        
+    
 
-sleep(3)
+            
+
+
+sleep(1)
 manageTransmission()
